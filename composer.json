@@ -1,5 +1,6 @@
 {
   "name": "iseed838/photon-api",
+  "minimum-stability": "stable",
   "description": "Project Photon-api wrapper",
   "keywords": [
     "photon",
@@ -7,7 +8,7 @@
   ],
   "homepage": "https://github.com/iseed838/photon-api",
   "type": "library",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "authors": [
     {
       "name": "Andrey Boyarchuk",

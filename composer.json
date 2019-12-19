@@ -1,11 +1,11 @@
 {
-  "name": "iseed838/photon",
-  "description": "Project Photon wrapper",
+  "name": "iseed838/photon-api",
+  "description": "Project Photon-api wrapper",
   "keywords": [
     "photon",
     "api"
   ],
-  "homepage": "https://github.com/iseed838/photon",
+  "homepage": "https://github.com/iseed838/photon-api",
   "type": "library",
   "authors": [
     {

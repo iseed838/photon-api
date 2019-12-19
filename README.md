@@ -5,6 +5,7 @@ Project wrapper of api requests for photon project https://photon.komoot.de/
 
 Allows you to perform a fully contextual search by text template and reverse search by coordinates
 
+
 * To install with composer try:
 
 composer require --prefer-dist iseed838/photon-api "master"

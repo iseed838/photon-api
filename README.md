@@ -1,4 +1,4 @@
-# photon
+# photon-api
 Project Photon-api wrapper
 
 Project wrapper of api requests for photon project https://photon.komoot.de/

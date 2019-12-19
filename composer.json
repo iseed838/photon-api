@@ -7,7 +7,7 @@
   ],
   "homepage": "https://github.com/iseed838/photon-api",
   "type": "library",
-  "license": "free",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "Andrey Boyarchuk",

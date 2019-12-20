@@ -32,12 +32,12 @@ class PhotonRequest extends BaseModel
     const OSM_TAG_PLACE          = 'place';
     const OSM_TAG_HOUSE          = 'place:house';
 
-    protected $query     = null;
-    protected $longitude = null;
-    protected $latitude  = null;
-    protected $language  = self::LANGUAGE_RU;
-    protected $limit     = self::DEFAULT_RESPONSE_LIMIT;
-    protected $osm_tag   = null;
+    public $query     = null;
+    public $longitude = null;
+    public $latitude  = null;
+    public $language  = self::LANGUAGE_RU;
+    public $limit     = self::DEFAULT_RESPONSE_LIMIT;
+    public $osm_tag   = null;
 
     /**
      * Check query rules

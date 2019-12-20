@@ -22,8 +22,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Client extends BaseModel
 {
-    public    $config = null;
-    protected $client = null;
+    public $config = null;
+    public $client = null;
 
     public function init()
     {

@@ -17,9 +17,9 @@ namespace Photon\Models;
  */
 class ClientConfig extends BaseModel
 {
-    protected $url                = null;
-    protected $base_auth_username = null;
-    protected $base_auth_password = null;
+    public $url                = null;
+    public $base_auth_username = null;
+    public $base_auth_password = null;
 
     public function checkConfig()
     {

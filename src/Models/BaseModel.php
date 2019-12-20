@@ -9,10 +9,9 @@
 namespace Photon\Models;
 
 
-use Photon\Exceptions\InvalidConfigException;
+use Photon\Exceptions\ValidException;
 use Photon\Traits\ArrayableTrait;
 use Photon\Traits\ConfigurableTrait;
-use Rakit\Validation\Validation;
 use Rakit\Validation\Validator;
 
 abstract class BaseModel
@@ -20,32 +19,32 @@ abstract class BaseModel
     use ConfigurableTrait, ArrayableTrait;
 
     /**
-     * Validate model
      * @param array $rules
      * @param array $messages
-     * @return Validation
+     * @param Validator|null $validator
+     * @return \Rakit\Validation\Validation
      */
-    public function validate(array $rules, array $messages = []): Validation
+    public function validate(array $rules, array $messages = [], Validator $validator = null)
     {
-        $validator  = new Validator();
-        $validation = $validator->make($this->toArray(), $rules, $messages);
-        $validation->validate();
+        if (is_null($validator)) {
+            $validator = new Validator();
+        }
 
-        return $validation;
+        return $validator->validate($this->toArray(), $rules, $messages);
     }
 
     /**
-     * Failed validation throw exception
      * @param array $rules
      * @param array $messages
-     * @throws InvalidConfigException
+     * @param Validator|null $validator
+     * @throws ValidException
      */
-    public function validateOrExcept(array $rules, array $messages = [])
+    public function validateOrExcept(array $rules, array $messages = [], Validator $validator = null)
     {
-        $validation = $this->validate($rules, $messages);
+        $validation = $this->validate($rules, $messages, $validator);
         if ($validation->fails()) {
             $errors = $validation->errors->firstOfAll();
-            throw new InvalidConfigException(array_shift($errors));
+            throw new ValidException(array_shift($errors));
         }
     }
 

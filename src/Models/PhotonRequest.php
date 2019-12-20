@@ -9,7 +9,7 @@
 namespace Photon\Models;
 
 
-use Photon\Exceptions\InvalidConfigException;
+use Photon\Exceptions\ValidException;
 
 /**
  * Make request to photon system
@@ -41,7 +41,7 @@ class PhotonRequest extends BaseModel
 
     /**
      * Check query rules
-     * @throws InvalidConfigException
+     * @throws ValidException
      */
     public function checkQuery()
     {
@@ -57,7 +57,7 @@ class PhotonRequest extends BaseModel
 
     /**
      * Check reverse ruesl
-     * @throws InvalidConfigException
+     * @throws ValidException
      */
     public function checkReverse()
     {

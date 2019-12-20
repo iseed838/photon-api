@@ -21,16 +21,13 @@ class ClientConfig extends BaseModel
     protected $base_auth_username = null;
     protected $base_auth_password = null;
 
-    /**
-     * @throws \Photon\Exceptions\InvalidConfigException
-     */
-    public function init()
+    public function checkConfig()
     {
-        $this->validateOrExcept([
+        return [
             'url'                => 'required|url',
             'base_auth_username' => 'alpha_num',
             'base_auth_password' => 'alpha_num',
-        ]);
+        ];
     }
 
     /**

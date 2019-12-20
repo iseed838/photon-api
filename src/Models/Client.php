@@ -9,7 +9,7 @@
 namespace Photon\Models;
 
 use Photon\Exceptions\HttpException;
-use Photon\Exceptions\InvalidConfigException;
+use Photon\Exceptions\ValidException;
 use Photon\Factory;
 use Psr\Http\Message\ResponseInterface;
 
@@ -25,14 +25,8 @@ class Client extends BaseModel
     public    $config = null;
     protected $client = null;
 
-    /**
-     * @throws InvalidConfigException
-     */
     public function init()
     {
-        if (is_null($this->config) || !$this->config instanceof ClientConfig) {
-            throw new InvalidConfigException("Config must be set and instance of Photon\Model\ClientConfig");
-        }
         if (is_null($this->client) || !$this->client instanceof \GuzzleHttp\Client) {
             $this->setClient();
         }
@@ -51,14 +45,26 @@ class Client extends BaseModel
     }
 
     /**
+     * @throws ValidException
+     */
+    public function checkConfig()
+    {
+        if (is_null($this->config) || !$this->config instanceof ClientConfig) {
+            throw new ValidException("Client config must be set and instance of ClientConfig");
+        }
+        $this->config->checkConfig();
+    }
+
+    /**
      * Make query string request
      * @param PhotonRequest $request
      * @return array
      * @throws HttpException
-     * @throws InvalidConfigException
+     * @throws ValidException
      */
     public function query(PhotonRequest $request): array
     {
+        $this->checkConfig();
         $request->checkQuery();
         $url = "{$this->config->getUrl()}/api?{$request->getUrlParameters()}";
         try {
@@ -76,10 +82,11 @@ class Client extends BaseModel
      * @param PhotonRequest $request
      * @return array
      * @throws HttpException
-     * @throws InvalidConfigException
+     * @throws ValidException
      */
     public function reverse(PhotonRequest $request): array
     {
+        $this->checkConfig();
         $request->checkReverse();
         $url = "{$this->config->getUrl()}/reverse?{$request->getUrlParameters()}";
         try {

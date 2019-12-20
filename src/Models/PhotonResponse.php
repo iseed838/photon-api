@@ -262,18 +262,18 @@ class PhotonResponse extends BaseModel
     /**
      * @return null|string
      */
-    public function getHousenumber(): ?string
+    public function getHouseNumber(): ?string
     {
         return $this->housenumber;
     }
 
     /**
-     * @param null|string $housenumber
+     * @param null|string $houseNumber
      * @return PhotonResponse $this;
      */
-    public function setHousenumber(?string $housenumber): self
+    public function setHouseNumber(?string $houseNumber): self
     {
-        $this->housenumber = $housenumber;
+        $this->housenumber = $houseNumber;
 
         return $this;
     }

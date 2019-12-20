@@ -17,25 +17,22 @@ trait ConfigurableTrait
     /**
      * Replace base constructor
      * ConfigurableTrait constructor.
-     * @param array|object $properties
+     * @param array $properties
      */
-    public function __construct($properties = null)
+    public function __construct($properties = [])
     {
-        if (!is_null($properties)) {
-            $this->loading($properties);
+        if (is_array($properties) && !empty($properties)) {
+            $this->configure($properties);
         }
-        $this::init();
+        $this->init();
     }
 
     /**
      * Loading class
      * @param $properties
      */
-    private function loading($properties)
+    public function configure($properties)
     {
-        if (is_object($properties)) {
-            $properties = get_object_vars($properties);
-        }
         foreach ($properties as $key => $value) {
             if (property_exists(static::class, $key)) {
                 $this->$key = $value;
@@ -44,7 +41,7 @@ trait ConfigurableTrait
     }
 
     /**
-     * Inicialize class
+     * Initialization class
      */
     public function init()
     {

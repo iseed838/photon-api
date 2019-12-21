@@ -65,7 +65,14 @@ class Client extends BaseModel
     public function query(PhotonRequest $request): array
     {
         $this->checkConfig();
-        $request->checkQuery();
+        $request->validateOrExcept([
+            'query'     => 'required|min:3',
+            'longitude' => 'between:-180,180',
+            'latitude'  => 'between:-180,180',
+            'language'  => 'required|in:' . implode(',', $request::getLanguageDictionary()),
+            'limit'     => 'required|integer|min:1',
+            'osm_tag'   => 'min:3'
+        ]);
         $url = "{$this->config->getUrl()}/api?{$request->getUrlParameters()}";
         try {
             $response = $this->client->get($url);
@@ -87,7 +94,22 @@ class Client extends BaseModel
     public function reverse(PhotonRequest $request): array
     {
         $this->checkConfig();
-        $request->checkReverse();
+        $request->validateOrExcept([
+            'longitude' => 'required|between:-180,180',
+            'latitude'  => 'required|between:-180,180',
+            'language'  => 'required|in:' . implode(',', $request::getLanguageDictionary()),
+            'limit'     => 'required|integer|min:1',
+            'query'     => [
+                function ($value) {
+                    return empty($value);
+                }
+            ],
+            'osm_tag'   => [
+                function ($value) {
+                    return empty($value);
+                }
+            ]
+        ]);
         $url = "{$this->config->getUrl()}/reverse?{$request->getUrlParameters()}";
         try {
             $response = $this->client->get($url);

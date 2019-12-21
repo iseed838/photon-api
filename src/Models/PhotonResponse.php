@@ -25,6 +25,7 @@ namespace Photon\Models;
  * @property null|string $city
  * @property null|string $street
  * @property null|string $housenumber
+ * @property null|string $name
  * @property null|float|integer $latitude
  * @property null|float|integer $longitude
  * @property null|string $type
@@ -44,6 +45,7 @@ class PhotonResponse extends BaseModel
     public $city        = null;
     public $street      = null;
     public $housenumber = null;
+    public $name        = null;
 
     // Geometry section
     public $latitude  = null;

@@ -9,8 +9,6 @@
 namespace Photon\Models;
 
 
-use Photon\Exceptions\ValidException;
-
 /**
  * Make request to photon system
  * Class PhotonRequest
@@ -38,46 +36,6 @@ class PhotonRequest extends BaseModel
     public $language  = self::LANGUAGE_RU;
     public $limit     = self::DEFAULT_RESPONSE_LIMIT;
     public $osm_tag   = null;
-
-    /**
-     * Check query rules
-     * @throws ValidException
-     */
-    public function checkQuery()
-    {
-        $this->validateOrExcept([
-            'query'     => 'required|min:3',
-            'longitude' => 'between:-180,180',
-            'latitude'  => 'between:-180,180',
-            'language'  => 'required|in:' . implode(',', self::getLanguageDictionary()),
-            'limit'     => 'required|integer|min:1',
-            'osm_tag'   => 'min:3'
-        ]);
-    }
-
-    /**
-     * Check reverse ruesl
-     * @throws ValidException
-     */
-    public function checkReverse()
-    {
-        $this->validateOrExcept([
-            'longitude' => 'required|between:-180,180',
-            'latitude'  => 'required|between:-180,180',
-            'language'  => 'required|in:' . implode(',', self::getLanguageDictionary()),
-            'limit'     => 'required|integer|min:1',
-            'query'     => [
-                function ($value) {
-                    return empty($value);
-                }
-            ],
-            'osm_tag'   => [
-                function ($value) {
-                    return empty($value);
-                }
-            ]
-        ]);
-    }
 
     /**
      * Get Language Dictionary

@@ -8,6 +8,9 @@
 
 class FactoryTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @return \Photon\Models\ClientConfig
+     */
     public function testCreateConfig()
     {
         $model = Photon\Factory::getClientConfig([
@@ -23,6 +26,8 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @depends testCreateConfig
+     * @param \Photon\Models\ClientConfig $config
+     * @return \Photon\Models\Client
      */
     public function testCreateClient($config)
     {

@@ -48,7 +48,7 @@ class Factory
      * @param array $params
      * @return PhotonRequest
      */
-    public static function getPhotonRequest(array $params)
+    public static function getPhotonRequest(array $params = [])
     {
         $item = new PhotonRequest($params);
 
@@ -60,7 +60,7 @@ class Factory
      * @param array $params
      * @return PhotonResponse
      */
-    public static function getPhotonResponse(array $params)
+    public static function getPhotonResponse(array $params = [])
     {
         $item = new PhotonResponse($params);
 

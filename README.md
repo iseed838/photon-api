@@ -8,46 +8,41 @@ Allows you to perform a fully contextual search by text template and reverse sea
 
 * To install with composer try:
 
-composer require --prefer-dist iseed838/photon-api "master"
+composer require iseed838/photon-api "~0.1"
 
 * Make query request
 
-<pre>
-//Make config
-$config   = Photon\Factory::getClientConfig([
-    'url'                => 'https://photon.komoot.de',
+```php
+$client   = new \Photon\Models\PhotonClient(new \GuzzleHttp\Client(), [
+    'url'                => 'https://http://photon.komoot.de',
 ]);
-//Make request
-$request  = Photon\Factory::getPhotonRequest([
-    'query'    => 'Moscow, Vavi',
-    'language' => \Photon\Models\PhotonRequest::LANGUAGE_EN,
-    'osm_tag'  => \Photon\Models\PhotonRequest::OSM_TAG_PLACE,
-    'limit'    => 3
+
+$request  = new \Photon\Models\PhotonRequest( [
+    'latitude'  => 55.630358,
+    'longitude' => 37.516776,
+    'language'  => \Photon\Models\PhotonRequest::LANGUAGE_EN,
+    'limit'     => 1
 ]);
-//Execute request
-$response = Photon\Factory::getClient($config)->query($request);
-</pre>
+$response = $client->reverse($request);
+```
 
 * Make reverse request
 
-<pre>
-//Make config
-$config   = Photon\Factory::getClientConfig([
-    'url'                => 'https://photon.komoot.de',
+```php
+$client   = new \Photon\Models\PhotonClient(new \GuzzleHttp\Client(), [
+    'url'                => 'https://http://photon.komoot.de',
 ]);
-//Make request
 $request  = Photon\Factory::getPhotonRequest([
     'latitude'  => 55.630358,
     'longitude' => 37.516776,
     'language'  => \Photon\Models\PhotonRequest::LANGUAGE_EN,
     'limit'     => 1
 ]);
-//Execute request
-$response = Photon\Factory::getClient($config)->reverse($request);
-</pre>
+$response = $client->reverse($request);
+```
 
 The result returns an array containing the limit of response objects
-<pre>
+```php
     [0] => Photon\Models\PhotonResponse Object
         (
             [osm_id] => 537247988
@@ -73,5 +68,4 @@ The result returns an array containing the limit of response objects
             [longitude] => 37.516796697274
             [type] => Point
         )
-
-</pre>
+```

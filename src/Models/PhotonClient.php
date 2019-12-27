@@ -8,51 +8,37 @@
 
 namespace Photon\Models;
 
+use GuzzleHttp\Client;
 use Photon\Exceptions\HttpException;
 use Photon\Exceptions\ValidException;
-use Photon\Factory;
+use Photon\Traits\ConfigurableTrait;
+use Photon\Traits\ValidatorTrait;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Client model
- * Class Client
+ * Class QueryClient
  * @package Photon
- * @property ClientConfig $config
- * @property \GuzzleHttp\Client $client
+ * @property string $url
+ * @property null|string $base_auth_username
+ * @property null|string $base_auth_password
+ * @property Client $client
  */
-class Client extends BaseModel
+class PhotonClient
 {
-    public $config = null;
-    public $client = null;
+    use ConfigurableTrait, ValidatorTrait;
 
-    public function init()
-    {
-        if (is_null($this->client) || !$this->client instanceof \GuzzleHttp\Client) {
-            $this->setClient();
-        }
-    }
+    public $url                = null;
+    public $base_auth_username = null;
+    public $base_auth_password = null;
+    public $client             = null;
 
-    /**
-     * Set up GuzzleHttp client
-     */
-    private function setClient()
+    public function __construct(Client $client, array $properties = [])
     {
-        $options = [];
-        if (!empty($this->config->getBaseAuthUsername()) && !empty($this->config->getBaseAuthPassword())) {
-            $options['auth'] = [$this->config->getBaseAuthUsername(), $this->config->getBaseAuthPassword()];
+        $this->client = $client;
+        if (!empty($properties)) {
+            $this->configure($properties);
         }
-        $this->client = new \GuzzleHttp\Client($options);
-    }
-
-    /**
-     * @throws ValidException
-     */
-    public function checkConfig()
-    {
-        if (is_null($this->config) || !$this->config instanceof ClientConfig) {
-            throw new ValidException("Client config must be set and instance of ClientConfig");
-        }
-        $this->config->checkConfig();
     }
 
     /**
@@ -64,7 +50,6 @@ class Client extends BaseModel
      */
     public function query(PhotonRequest $request): array
     {
-        $this->checkConfig();
         $request->validateOrExcept([
             'query'     => 'required|min:3',
             'longitude' => 'between:-180,180',
@@ -73,9 +58,15 @@ class Client extends BaseModel
             'limit'     => 'required|integer|min:1',
             'osm_tag'   => 'min:3'
         ]);
-        $url = "{$this->config->getUrl()}/api?{$request->getUrlParameters()}";
+        $url     = "{$this->getUrl()}/api?{$request->getUrlParameters()}";
+        $options = [];
+        if (!empty($this->getBaseAuthUsername()) && !empty($this->getBaseAuthPassword())) {
+            $options = [
+                'auth' => [$this->getBaseAuthUsername(), $this->getBaseAuthPassword()]
+            ];
+        }
         try {
-            $response = $this->client->get($url);
+            $response = $this->getClient()->request('GET', $url, $options);
             $items    = $this->makeModels($response);
         } catch (\Exception $exception) {
             throw new HttpException($exception->getMessage());
@@ -93,7 +84,6 @@ class Client extends BaseModel
      */
     public function reverse(PhotonRequest $request): array
     {
-        $this->checkConfig();
         $request->validateOrExcept([
             'longitude' => 'required|between:-180,180',
             'latitude'  => 'required|between:-180,180',
@@ -110,9 +100,15 @@ class Client extends BaseModel
                 }
             ]
         ]);
-        $url = "{$this->config->getUrl()}/reverse?{$request->getUrlParameters()}";
+        $options = [];
+        if (!empty($this->getBaseAuthUsername()) && !empty($this->getBaseAuthPassword())) {
+            $options = [
+                'auth' => [$this->getBaseAuthUsername(), $this->getBaseAuthPassword()]
+            ];
+        }
+        $url = "{$this->getUrl()}/reverse?{$request->getUrlParameters()}";
         try {
-            $response = $this->client->get($url);
+            $response = $this->getClient()->request('GET', $url, $options);
             $items    = $this->makeModels($response);
         } catch (\Exception $exception) {
             throw new HttpException($exception->getMessage());
@@ -137,7 +133,7 @@ class Client extends BaseModel
         foreach ($result['features'] as $resultItem) {
             $properties = $resultItem['properties'];
             $geometry   = $resultItem['geometry'];
-            $model      = Factory::getPhotonResponse($properties);
+            $model      = new PhotonResponse($properties);
             $model->setLongitude($geometry['coordinates'][0]);
             $model->setLatitude($geometry['coordinates'][1]);
             $model->setType($geometry['type']);
@@ -145,5 +141,81 @@ class Client extends BaseModel
         }
 
         return $items;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     * @return PhotonClient $this;
+     */
+    public function setUrl(string $url): self
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBaseAuthUsername(): ?string
+    {
+        return $this->base_auth_username;
+    }
+
+    /**
+     * @param null|string $base_auth_username
+     * @return PhotonClient $this;
+     */
+    public function setBaseAuthUsername(?string $base_auth_username): self
+    {
+        $this->base_auth_username = $base_auth_username;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBaseAuthPassword(): ?string
+    {
+        return $this->base_auth_password;
+    }
+
+    /**
+     * @param null|string $base_auth_password
+     * @return PhotonClient $this;
+     */
+    public function setBaseAuthPassword(?string $base_auth_password): self
+    {
+        $this->base_auth_password = $base_auth_password;
+
+        return $this;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param Client $client
+     * @return PhotonClient $this;
+     */
+    public function setClient(Client $client): self
+    {
+        $this->client = $client;
+
+        return $this;
     }
 }

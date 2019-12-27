@@ -8,6 +8,9 @@
 
 namespace Photon\Models;
 
+use Photon\Traits\ConfigurableTrait;
+use Photon\Traits\ValidatorTrait;
+
 
 /**
  * Make request to photon system
@@ -20,8 +23,9 @@ namespace Photon\Models;
  * @property integer $limit
  * @property string|null $osm_tag
  */
-class PhotonRequest extends BaseModel
+class PhotonRequest
 {
+    use ConfigurableTrait, ValidatorTrait;
 
     const LANGUAGE_EN            = 'en';
     const LANGUAGE_RU            = 'ru';
@@ -30,12 +34,12 @@ class PhotonRequest extends BaseModel
     const OSM_TAG_PLACE          = 'place';
     const OSM_TAG_HOUSE          = 'place:house';
 
-    public $query     = null;
-    public $longitude = null;
-    public $latitude  = null;
-    public $language  = self::LANGUAGE_RU;
-    public $limit     = self::DEFAULT_RESPONSE_LIMIT;
-    public $osm_tag   = null;
+    protected $query     = null;
+    protected $longitude = null;
+    protected $latitude  = null;
+    protected $language  = self::LANGUAGE_RU;
+    protected $limit     = self::DEFAULT_RESPONSE_LIMIT;
+    protected $osm_tag   = null;
 
     /**
      * Get Language Dictionary

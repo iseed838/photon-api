@@ -21,23 +21,27 @@ trait ConfigurableTrait
      */
     public function __construct($properties = [])
     {
-        if (is_array($properties) && !empty($properties)) {
-            $this->configure($properties);
-        }
+        $this->configure($properties);
         $this->init();
     }
 
     /**
      * Loading class
      * @param $properties
+     * @return static
      */
-    public function configure($properties)
+    public function configure($properties = []): self
     {
+        if (!is_array($properties) || empty($properties)) {
+            return $this;
+        }
         foreach ($properties as $key => $value) {
             if (property_exists(static::class, $key)) {
                 $this->$key = $value;
             }
         }
+
+        return $this;
     }
 
     /**

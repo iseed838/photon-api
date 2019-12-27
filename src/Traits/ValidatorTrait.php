@@ -2,23 +2,25 @@
 /**
  * Created by PhpStorm.
  * User: iseed
- * Date: 18.12.19
- * Time: 16:34
+ * Date: 06.06.19
+ * Time: 17:29
  */
 
-namespace Photon\Models;
-
+namespace Photon\Traits;
 
 use Photon\Exceptions\ValidException;
-use Photon\Traits\ArrayableTrait;
-use Photon\Traits\ConfigurableTrait;
 use Rakit\Validation\Validator;
 
-abstract class BaseModel
+/**
+ * Validate trait
+ * Trait Configurable
+ */
+trait ValidatorTrait
 {
-    use ConfigurableTrait, ArrayableTrait;
+    use ArrayableTrait;
 
     /**
+     * Validate rules
      * @param array $rules
      * @param array $messages
      * @param Validator|null $validator
@@ -34,10 +36,11 @@ abstract class BaseModel
     }
 
     /**
+     * Check validation rules
      * @param array $rules
      * @param array $messages
      * @param Validator|null $validator
-     * @throws ValidException
+     * @throws \Photon\Exceptions\ValidException
      */
     public function validateOrExcept(array $rules, array $messages = [], Validator $validator = null)
     {
@@ -47,6 +50,4 @@ abstract class BaseModel
             throw new ValidException(array_shift($errors));
         }
     }
-
-
 }

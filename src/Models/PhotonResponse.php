@@ -8,6 +8,8 @@
 
 namespace Photon\Models;
 
+use Photon\Traits\ConfigurableTrait;
+
 
 /**
  * Photon response model
@@ -30,27 +32,29 @@ namespace Photon\Models;
  * @property null|float|integer $longitude
  * @property null|string $type
  */
-class PhotonResponse extends BaseModel
+class PhotonResponse
 {
+    use ConfigurableTrait;
+
     // Property section
-    public $osm_id      = null;
-    public $osm_type    = null;
-    public $extent      = null;
-    public $osm_key     = null;
-    public $osm_value   = null;
-    public $postcode    = null;
-    public $countrycode = null;
-    public $country     = null;
-    public $state       = null;
-    public $city        = null;
-    public $street      = null;
-    public $housenumber = null;
-    public $name        = null;
+    protected $osm_id      = null;
+    protected $osm_type    = null;
+    protected $extent      = null;
+    protected $osm_key     = null;
+    protected $osm_value   = null;
+    protected $postcode    = null;
+    protected $countrycode = null;
+    protected $country     = null;
+    protected $state       = null;
+    protected $city        = null;
+    protected $street      = null;
+    protected $housenumber = null;
+    protected $name        = null;
 
     // Geometry section
-    public $latitude  = null;
-    public $longitude = null;
-    public $type      = null;
+    protected $latitude  = null;
+    protected $longitude = null;
+    protected $type      = null;
 
     /**
      * @return int|null

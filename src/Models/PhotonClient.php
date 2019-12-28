@@ -28,7 +28,7 @@ class PhotonClient
 {
     use ConfigurableTrait, ValidatorTrait;
 
-    public $url                = null;
+    public $url                = Dictionary::DEFAULT_URL;
     public $base_auth_username = null;
     public $base_auth_password = null;
     public $client             = null;
@@ -42,22 +42,30 @@ class PhotonClient
     }
 
     /**
+     * Check parameters
+     * @throws ValidException
+     */
+    protected function check()
+    {
+        $this->validateOrExcept([
+            'url'                => 'required|url',
+            'base_auth_username' => 'regex:/[A-z0-9\-_]+/u',
+            'base_auth_password' => 'regex:/[A-z0-9\-_]+/u',
+            'client'             => 'required',
+        ]);
+    }
+
+    /**
      * Make query string request
-     * @param PhotonRequest $request
+     * @param PhotonQueryRequest $request
      * @return array
      * @throws HttpException
      * @throws ValidException
      */
-    public function query(PhotonRequest $request): array
+    public function query(PhotonQueryRequest $request): array
     {
-        $request->validateOrExcept([
-            'query'     => 'required|min:3',
-            'longitude' => 'between:-180,180',
-            'latitude'  => 'between:-180,180',
-            'language'  => 'required|in:' . implode(',', $request::getLanguageDictionary()),
-            'limit'     => 'required|integer|min:1',
-            'osm_tag'   => 'min:3'
-        ]);
+        $this->check();
+        $request->check();
         $url     = "{$this->getUrl()}/api?{$request->getUrlParameters()}";
         $options = [];
         if (!empty($this->getBaseAuthUsername()) && !empty($this->getBaseAuthPassword())) {
@@ -77,29 +85,15 @@ class PhotonClient
 
     /**
      * Make query to coordinates
-     * @param PhotonRequest $request
+     * @param PhotonReverseRequest $request
      * @return array
      * @throws HttpException
      * @throws ValidException
      */
-    public function reverse(PhotonRequest $request): array
+    public function reverse(PhotonReverseRequest $request): array
     {
-        $request->validateOrExcept([
-            'longitude' => 'required|between:-180,180',
-            'latitude'  => 'required|between:-180,180',
-            'language'  => 'required|in:' . implode(',', $request::getLanguageDictionary()),
-            'limit'     => 'required|integer|min:1',
-            'query'     => [
-                function ($value) {
-                    return empty($value);
-                }
-            ],
-            'osm_tag'   => [
-                function ($value) {
-                    return empty($value);
-                }
-            ]
-        ]);
+        $this->check();
+        $request->check();
         $options = [];
         if (!empty($this->getBaseAuthUsername()) && !empty($this->getBaseAuthPassword())) {
             $options = [

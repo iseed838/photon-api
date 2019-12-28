@@ -22,16 +22,27 @@ class ModelsTest extends \PHPUnit\Framework\TestCase
         return $model;
     }
 
-
-    public function testCreateRequest()
+    public function testCreateQueryRequest()
     {
-        $model = new \Photon\Models\PhotonRequest([
+        $model = new \Photon\Models\PhotonQueryRequest([
             'query'   => 'Москва, Вавилова 6',
-            'osm_tag' => \Photon\Models\PhotonRequest::OSM_TAG_PLACE,
+            'osm_tag' => \Photon\Models\Dictionary::OSM_TAG_PLACE,
             'limit'   => 6
         ]);
         $this->assertNotEmpty($model);
-        $this->assertInstanceOf(\Photon\Models\PhotonRequest::class, $model);
+        $this->assertInstanceOf(\Photon\Models\PhotonQueryRequest::class, $model);
+    }
+
+
+    public function testCreateReverseRequest()
+    {
+        $model = new \Photon\Models\PhotonReverseRequest([
+            'latitude'  => 55.630358,
+            'longitude' => 37.516776,
+            'limit'     => 1
+        ]);
+        $this->assertNotEmpty($model);
+        $this->assertInstanceOf(\Photon\Models\PhotonReverseRequest::class, $model);
     }
 
     public function testCreateResponse()

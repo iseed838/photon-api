@@ -13,44 +13,40 @@ use Photon\Traits\ValidatorTrait;
 
 
 /**
- * Make request to photon system
- * Class PhotonRequest
+ * Make query request to photon system
+ * Class PhotonQueryRequest
  * @package Photon
- * @property null|string $query
+ * @property string $query
  * @property null|float|integer $latitude
  * @property null|float|integer $longitude
  * @property string $language
  * @property integer $limit
  * @property string|null $osm_tag
  */
-class PhotonRequest
+class PhotonQueryRequest
 {
     use ConfigurableTrait, ValidatorTrait;
-
-    const LANGUAGE_EN            = 'en';
-    const LANGUAGE_RU            = 'ru';
-    const DEFAULT_RESPONSE_LIMIT = 5;
-    const OSM_TAG_STREET         = 'highway';
-    const OSM_TAG_PLACE          = 'place';
-    const OSM_TAG_HOUSE          = 'place:house';
 
     protected $query     = null;
     protected $longitude = null;
     protected $latitude  = null;
-    protected $language  = self::LANGUAGE_RU;
-    protected $limit     = self::DEFAULT_RESPONSE_LIMIT;
+    protected $language  = Dictionary::LANGUAGE_EN;
+    protected $limit     = Dictionary::DEFAULT_QUERY_LIMIT;
     protected $osm_tag   = null;
 
     /**
-     * Get Language Dictionary
-     * @return array
+     * @throws \Photon\Exceptions\ValidException
      */
-    public static function getLanguageDictionary()
+    public function check()
     {
-        return [
-            self::LANGUAGE_EN,
-            self::LANGUAGE_RU
-        ];
+        $this->validateOrExcept([
+            'query'     => 'required|min:3',
+            'longitude' => 'between:-180,180',
+            'latitude'  => 'between:-180,180',
+            'language'  => 'required|in:' . implode(',', Dictionary::getLanguageDictionary()),
+            'limit'     => 'required|integer|min:1',
+            'osm_tag'   => 'min:3'
+        ]);
     }
 
     /**
@@ -60,12 +56,10 @@ class PhotonRequest
     public function getUrlParameters(): string
     {
         $parameters = [
+            'q'     => $this->getQuery(),
             'limit' => $this->getLimit(),
             'lang'  => $this->getLanguage(),
         ];
-        if (!empty($this->getQuery())) {
-            $parameters['q'] = $this->query;
-        }
         if (!empty($this->getLatitude()) && !empty($this->getLongitude())) {
             $parameters['lon'] = $this->getLongitude();
             $parameters['lat'] = $this->getLatitude();
@@ -78,16 +72,16 @@ class PhotonRequest
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getQuery(): ?string
+    public function getQuery(): string
     {
         return $this->query;
     }
 
     /**
      * @param string $query
-     * @return PhotonRequest $this;
+     * @return PhotonQueryRequest $this;
      */
     public function setQuery(string $query): self
     {
@@ -97,7 +91,7 @@ class PhotonRequest
     }
 
     /**
-     * @return float|integer|null
+     * @return float|int|null
      */
     public function getLatitude()
     {
@@ -105,8 +99,8 @@ class PhotonRequest
     }
 
     /**
-     * @param float|integer $latitude
-     * @return PhotonRequest $this;
+     * @param float|int|null $latitude
+     * @return PhotonQueryRequest $this;
      */
     public function setLatitude($latitude): self
     {
@@ -116,7 +110,7 @@ class PhotonRequest
     }
 
     /**
-     * @return float|integer|null
+     * @return float|int|null
      */
     public function getLongitude()
     {
@@ -124,8 +118,8 @@ class PhotonRequest
     }
 
     /**
-     * @param float|integer $longitude
-     * @return PhotonRequest $this;
+     * @param float|int|null $longitude
+     * @return PhotonQueryRequest $this;
      */
     public function setLongitude($longitude): self
     {
@@ -144,7 +138,7 @@ class PhotonRequest
 
     /**
      * @param string $language
-     * @return PhotonRequest $this;
+     * @return PhotonQueryRequest $this;
      */
     public function setLanguage(string $language): self
     {
@@ -163,7 +157,7 @@ class PhotonRequest
 
     /**
      * @param int $limit
-     * @return PhotonRequest $this;
+     * @return PhotonQueryRequest $this;
      */
     public function setLimit(int $limit): self
     {
@@ -182,7 +176,7 @@ class PhotonRequest
 
     /**
      * @param null|string $osm_tag
-     * @return PhotonRequest
+     * @return PhotonQueryRequest $this;
      */
     public function setOsmTag(?string $osm_tag): self
     {

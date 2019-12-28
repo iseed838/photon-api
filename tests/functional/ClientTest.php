@@ -14,13 +14,11 @@ class QueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testQuery()
     {
-        $client = new \Photon\Models\PhotonClient(new GuzzleHttp\Client(), [
-            'url' => 'http://photon.komoot.de'
-        ]);
+        $client = new \Photon\Models\PhotonClient(new GuzzleHttp\Client());
         $this->assertNotEmpty($client);
-        $request = new \Photon\Models\PhotonRequest([
+        $request = new \Photon\Models\PhotonQueryRequest([
             'query'    => 'Moscow Vavil',
-            'language' => \Photon\Models\PhotonRequest::LANGUAGE_EN,
+            'language' => \Photon\Models\Dictionary::LANGUAGE_EN,
             'limit'    => 2
         ]);
         $this->assertNotEmpty($request);
@@ -35,13 +33,11 @@ class QueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testReverse()
     {
-        $client  = new \Photon\Models\PhotonClient(new GuzzleHttp\Client(), [
-            'url' => 'http://photon.komoot.de'
-        ]);
-        $request = new \Photon\Models\PhotonRequest([
+        $client  = new \Photon\Models\PhotonClient(new GuzzleHttp\Client());
+        $request = new \Photon\Models\PhotonReverseRequest([
             'latitude'  => 55.630358,
             'longitude' => 37.516776,
-            'language'  => \Photon\Models\PhotonRequest::LANGUAGE_EN,
+            'language'  => \Photon\Models\Dictionary::LANGUAGE_EN,
             'limit'     => 1
         ]);
         $this->assertNotEmpty($request);

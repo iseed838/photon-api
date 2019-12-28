@@ -13,30 +13,22 @@ composer require iseed838/photon-api "~0.1"
 * Make query request
 
 ```php
-$client   = new \Photon\Models\PhotonClient(new \GuzzleHttp\Client(), [
-    'url'                => 'https://http://photon.komoot.de',
-]);
+$client   = new \Photon\Models\PhotonClient(new \GuzzleHttp\Client());
 
-$request  = new \Photon\Models\PhotonRequest( [
-    'latitude'  => 55.630358,
-    'longitude' => 37.516776,
-    'language'  => \Photon\Models\PhotonRequest::LANGUAGE_EN,
-    'limit'     => 1
+$request  = new \Photon\Models\PhotonQueryRequest([
+    'query'  => "Moscow Valilova 6",
 ]);
-$response = $client->reverse($request);
+$response = $client->query($request);
 ```
 
 * Make reverse request
 
 ```php
-$client   = new \Photon\Models\PhotonClient(new \GuzzleHttp\Client(), [
-    'url'                => 'https://http://photon.komoot.de',
-]);
-$request  = Photon\Factory::getPhotonRequest([
+$client   = new \Photon\Models\PhotonClient(new \GuzzleHttp\Client());
+
+$request  = new \Photon\Models\PhotonReverseRequest( [
     'latitude'  => 55.630358,
     'longitude' => 37.516776,
-    'language'  => \Photon\Models\PhotonRequest::LANGUAGE_EN,
-    'limit'     => 1
 ]);
 $response = $client->reverse($request);
 ```
@@ -69,3 +61,19 @@ The result returns an array containing the limit of response objects
             [type] => Point
         )
 ```
+
+Query request properties
+
+- query (string|required) Text query    
+- longitude (int|float|null) Additional box coordinate;
+- latitude (int|float|null) Additional box coordinate;
+- language (required|string) Response language. Default is en. May accept en,de,ft,it
+- limit (required|int) Response count/ Default is 5
+- osm_tag (string|null) Additional filter to osm_tag
+
+Reverse request properties
+  
+- longitude (required|int|float) Address coordinate;
+- latitude (required|int|float) Address coordinate;
+- language (required|string) Response language. Default is en. May accept en,de,ft,it
+- limit (required|int) Response count/ Default is 5
